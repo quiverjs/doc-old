@@ -107,13 +107,20 @@ var uppercaseHello = combine(hello, toUppercase)
 
 ## API Specification
 
+### quiver-stream-channel
+
+For full documentation visit the [quiver-stream-channel](https://github.com/quiverjs/stream-channel) repository.
+
 ```javascript
+var streamChannel = require('quiver-stream-channel')
+
 var channel = streamChannel.createStreamChannel()
 var readStream = channel.readStream
 var writeStream = channel.writeStream
 ```
 
-Creates a pair of connected read/write stream through the `quiver-stream-channel` library. The two end points are usually then passed to different functions that are responsible for the read or write operation. Content written into the write stream will be read from the read stream at the other end.
+Create a pair of connected read/write stream through the `quiver-stream-channel` library. The two end points are usually then passed to different functions that are responsible for the read or write operation. Content written into the write stream will be read from the read stream at the other end.
+
 
 ```javascript
 readStream.read(readCallback)
@@ -121,11 +128,13 @@ readStream.read(readCallback)
 
 Attempt to read data from a readStream, which the read result will be pass to readCallback asynchronously.
 
+
 ```javascript
 readCallback(streamClosed, data)
 ```
 
 `streamClosed` is thruthy if when the end of stream is reached. If error occured during read, the error value can be retrieved from `streamClosed.err`. Otherwise the data variable contain the read value, which is typically a single buffer object. `streamClosed` and data exist exclusively from each other, which mean if is streamClosed exists then data is guaranteed to be null.
+
 
 ```javascript
 readStream.closeRead(err)
@@ -133,11 +142,13 @@ readStream.closeRead(err)
 
 Close the read stream optionally with an error value.
 
+
 ```javascript
 writeStream.write(data)
 ```
 
 Write data to a write stream immediately regardless of whether the reader on the other side is ready to read it. Calling this without prepareWrite gives the risk of having too much data buffered within the stream without reader reading it quick enough.
+
 
 ```javascript
 writeStream.prepareWrite(writeCallback)
@@ -145,14 +156,36 @@ writeStream.prepareWrite(writeCallback)
 
 Prepare to write to the write stream once the reader on the other side is ready, in which writeCallback will be called asynchronously. It is prohibited to call the write stream's `write()` method while `prepareWrite()` is waiting for its write callback. Such action do not have well defined semantics to the stream channel state and will cause an exception to be thrown.
 
+
 ```javascript
 writeCallback(streamClosed)
 ```
 
 Non-null streamClosed indicates that the stream has been prematurely closed and the writer should cancel all write operations. Otherwise it is now optimal for the writer to call `writeStream.write()`.
 
+
 ```javascript
 writeStream.closeWrite(err)
 ```
 
 Close the write stream with an optional error value.
+
+
+### quiver-stream-convert
+
+For full documentation visit the [quiver-stream-convert](https://github.com/quiverjs/stream-convert) repository.
+
+```javascript
+var streamConvert = require('quiver-stream-convert')
+
+var textStream = streamConvert.textToStream(text)
+var jsonStream = streamConvert.jsonToStream(json)
+
+```
+
+Create quiver read stream from Javascript string or plain json object.
+
+### Other stream related packages
+
+  - [quiver-file-stream](https://github.com/quiverjs/file-stream)
+  - [quiver-node-stream](https://github.com/quiverjs/node-stream)
