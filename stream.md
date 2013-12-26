@@ -49,7 +49,7 @@ var toUppercase = function(readStream, callback) {
       if(streamClosed) return writeStream.closeWrite(streamClosed.err)
 
       // Assume string in ASCII encoding
-      writeStream.write(data.toUppercase())
+      writeStream.write(data.toString().toUpperCase())
       doPipe()
     })
   }

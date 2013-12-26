@@ -127,7 +127,6 @@ var streamConvert = require('quiver-stream-convert')
 
 var textStreamable = streamConvert.textToStreamable(text)
 var jsonStreamable = streamConvert.jsonToStreamable(json)
-
 ```
 
 Convert a string or plain Javascript object into streamable that contain optimized `toText()`/`toJson()` methods.
@@ -136,7 +135,6 @@ Convert a string or plain Javascript object into streamable that contain optimiz
 ```javascript
 streamConvert.streamableToText(function (err, text) { })
 streamConvert.streamableToJson(function (err, json) { })
-
 ```
 
 Convert streamable into string or plain Javascript object while making use of optimized `toText()`/`toJson()` methods in the streamable if exist.
