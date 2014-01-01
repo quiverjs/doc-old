@@ -161,3 +161,5 @@ var httpHandler = function(requestHead, requestStreamable, function(err, respons
 Unlike the original Node HTTP handler, quiver HTTP handler separates the HTTP header part from the HTTP body. It is designed such that it is easy for intermediaries to strip/add HTTP headers that alter the content of the body, such as Content-Encoding and Transfer-Encoding, and supply a different stream body independent of the original header.
 
 In the handler callback the error object is retained so that HTTP handlers can make a quick return in the case of internal errors. Returning error is different from returning status 500 Internal Server Error response, as it indicates that the handler is explicitly _undecisive_ on how to render the error as HTTP response. Therefore this allows intermediaries to intercept the error and provide customized HTTP error response back to the client.
+
+## Next: [Handler Builder](04-handler-builder.md)

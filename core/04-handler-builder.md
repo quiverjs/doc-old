@@ -52,3 +52,5 @@ var handlerBuilder = function(config, callback) {
 ```
 
 Later chapters will show examples of handlers having dependency on other handlers. In such cases the quiver component system configure each handlers externally and pass instantiated handlers to to the handler builder that depend on them. We will also show that it is better practice to compose on handler builders instead of handler instances themselves. This makes it possible to combine many quiver components down to one handler builder with no configuration known ahead, such as during script startup time.
+
+## Next: [Filter](05-filter.md)

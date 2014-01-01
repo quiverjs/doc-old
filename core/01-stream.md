@@ -205,3 +205,5 @@ There is currently lack of example of implementing native streams, because Quive
 
   - [quiver-node-stream](https://github.com/quiverjs/node-stream) library creates quiver stream equivalent from a node stream. 
   - [quiver-file-stream](https://github.com/quiverjs/file-stream) acts as a thin wrapper around node's `fs` module to create quiver streams from filesystem using `quiver-node-stream`.
+
+## Next: [Streamable](02-streamable.md)

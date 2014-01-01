@@ -139,3 +139,4 @@ streamConvert.streamableToJson(function (err, json) { })
 
 Convert streamable into string or plain Javascript object while making use of optimized `toText()`/`toJson()` methods in the streamable if exist.
 
+## Next: [Handler](03-handler.md)

@@ -107,3 +107,5 @@ One might notice that quiver HTTP filter is simple but powerful construct that c
 Nevertheless, it is recommended to write HTTP filter only when the functionality is related to HTTP. Otherwise stream filter serve as much simpler alternative for implementing application-specific concerns.
 
 We will refer to stream handler and HTTP handler collectively as simply _handler_. The same as all higher order handler constructs such as handler builder and filter.
+
+## Next: [Middleware](06-middleware.md)

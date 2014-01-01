@@ -53,3 +53,6 @@ var combineMiddlewareWithHandlerBuilder = function(middleware, handlerBuilder) {
 ```
 
 In Quiver.js handler builder and middleware are the cornerstone building block for all quiver components. Using the composition technique we can reduce a complex handler network graph all the way down to one encapsulated handler builder, all without knowing configuration ahead of time. The [quiver-middleware](https://github.com/quiverjs/middleware) library provide example middlewares that Quiver.js use internally to build the [quiver component](component.md) architecture, which we will discuss next.
+
+
+## Next: [Handleable](07-handleable.md)
