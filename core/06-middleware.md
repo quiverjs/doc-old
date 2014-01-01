@@ -2,7 +2,7 @@
 Middleware
 ==========
 
-[Filters](filter.md) are great at extending handlers from the outside, but the handlers they receive are blackboxes that already been instantiated. As a result, a filter has no way to know how the handler was instantiated, or how many other filters have been applied to a handler before it arrive. Filter is designed to be easily composable, but how is it possible to ensure a filter is only applied once in a composition chain?
+[Filters](05-filter.md) are great at extending handlers from the outside, but the handlers they receive are blackboxes that already been instantiated. As a result, a filter has no way to know how the handler was instantiated, or how many other filters have been applied to a handler before it arrive. Filter is designed to be easily composable, but how is it possible to ensure a filter is only applied once in a composition chain?
 
 The answer to that is that we need to intercept at _handler construction_ time and alter the way handler is instantiated. _Middleware_ is the superset of filter that does the job:
 

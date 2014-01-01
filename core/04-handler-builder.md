@@ -2,7 +2,7 @@
 Handler Builder
 ===============
 
-The [Handler](handler.md) chapter introduced the quiver stream handler and HTTP handler for writing composable handler functions. While it is useful to pass handler functions around and compose them, one would find that handler implementations typically have dependency on application-wide configurations such as database credentials and file system paths. Before getting the handlers we need a way for the handlers to receive these configurations without exposing them on global scope - in other words we need a constructor.
+The [Handler](03-handler.md) chapter introduced the quiver stream handler and HTTP handler for writing composable handler functions. While it is useful to pass handler functions around and compose them, one would find that handler implementations typically have dependency on application-wide configurations such as database credentials and file system paths. Before getting the handlers we need a way for the handlers to receive these configurations without exposing them on global scope - in other words we need a constructor.
 
 _Handler builder_ provides a uniform way of configuring handlers:
 

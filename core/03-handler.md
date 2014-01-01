@@ -26,13 +26,13 @@ One issue with the above handler is that it is given the responsibility and full
 var handler = function(args, nodeReadStream, nodeWriteStream)
 ```
 
-The above code looks ok until we discover the weakness of node stream. In the [Stream](stream.md) chapter we learn that supplying write stream directly to functions reduce composibility and make it hard to handle errors. To solve the problem we make use of quiver stream to create a more elegant handler:
+The above code looks ok until we discover the weakness of node stream. In the [Stream](01-stream.md) chapter we learn that supplying write stream directly to functions reduce composibility and make it hard to handle errors. To solve the problem we make use of quiver stream to create a more elegant handler:
 
 ```javascript
 var handler = function(args, readStream, function(err, readStream) { })
 ```
 
-The handler making use of quiver read stream is much more elegant, but is not efficient in serializing/deserializing existing Javascript objects to the handler function. In the [Streamabe](streamable.md) chapter we also learn that streamable can be used to store multiple representation of a stream for fast access of stream content. With that we finally have the quiver _stream handler_:
+The handler making use of quiver read stream is much more elegant, but is not efficient in serializing/deserializing existing Javascript objects to the handler function. In the [Streamabe](02-streamable.md) chapter we also learn that streamable can be used to store multiple representation of a stream for fast access of stream content. With that we finally have the quiver _stream handler_:
 
 ```javascript
 var streamHandler = function(args, inputStreamable, function(err, resultStreamable) { })

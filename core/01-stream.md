@@ -190,10 +190,18 @@ Create quiver read stream from Javascript string or plain json object.
 
 Quiver streams are specially made to be _not_ extensible. The read/write streams created from `quiver-stream-channel` are made of plain Javascript objects. There is no base class for one to extend the stream functionality. Instead Quiver.js encourage the use of composition to add functionalities to a stream object. It is also easy to create new stream implementation from scratch, thanks to the minimal number of quiver stream API.
 
-For examples of how to extend stream functionalities through functional composition, [quiver-stream-timeout](https://github.com/quiverjs/stream-timeout) shows how to set a timeout for non-responding streams, and [quiver-stream-throttle](https://github.com/quiverjs/stream-throttle) shows how to easily implement speed throttling to a stream. As quiver stream is only readable by one reader, [quiver-split-stream](https://github.com/quiverjs/split-stream) duplicates a read stream to be read by multiple readers.
+Here are some examples of how to extend stream functionalities through functional composition: 
+
+  - [quiver-pipe-stream](https://github.com/quiverjs/split-stream) provide simple way of pipe data from read stream to write stream.
+  - [quiver-split-stream](https://github.com/quiverjs/split-stream) duplicates a read stream to be read by multiple readers.
+  - [quiver-stream-timeout](https://github.com/quiverjs/stream-timeout) shows how to set a timeout for non-responding streams.
+  - [quiver-stream-throttle](https://github.com/quiverjs/stream-throttle) shows how to easily implement speed throttling to a stream. 
 
 On implementing native stream sources such as file read stream, conventional techniques make use of inheritance to implement a conrete subclass of a `ReadStream` class. Such technique make sense from the library user's perspective, but makes it difficult for implementors to implement the subclass correctly. 
 
 Quiver.js have more natural way to implement such native streams. Instead of writing subclasses library authors are encouraged to simply make use of the quiver streams created from `quiver-stream-channel`. The write stream part is retained by the library code to read data from native APIs and write to it, while the read stream part is returned to the library user to consume the data.
 
-There is currently lack of example of implementing native streams, because Quiver.js make use of existing node streams instead of reinventing the wheel. The [quiver-node-stream](https://github.com/quiverjs/node-stream) library creates quiver stream equivalent from a node stream. [quiver-file-stream](https://github.com/quiverjs/file-stream) acts as a thin wrapper around node's `fs` module to create quiver streams from filesystem using `quiver-node-stream`.
+There is currently lack of example of implementing native streams, because Quiver.js make use of existing node streams instead of reinventing the wheel. However the following modules show how native node streams are wrapped to become quiver streams.
+
+  - [quiver-node-stream](https://github.com/quiverjs/node-stream) library creates quiver stream equivalent from a node stream. 
+  - [quiver-file-stream](https://github.com/quiverjs/file-stream) acts as a thin wrapper around node's `fs` module to create quiver streams from filesystem using `quiver-node-stream`.

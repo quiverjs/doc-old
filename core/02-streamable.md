@@ -2,7 +2,7 @@
 Streamable
 ==========
 
-Streams are great at asynchronously transferring large amount of data in chunks for efficient data processing. However most of the time data transferred across streams usually have small size and are derived from plain Javascript objects. Consider the follow greet function:
+[Streams](01-stream.md) are great at asynchronously transferring large amount of data in chunks for efficient data processing. However most of the time data transferred across streams usually have small size and are derived from plain Javascript objects. Consider the follow greet function:
 
 ```javascript
 var streamConvert = require('quiver-stream-convert')
