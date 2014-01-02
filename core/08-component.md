@@ -64,7 +64,7 @@ Notice that at its minimal, a component source file has no need to import any Qu
 
 ## Component Dependencies
 
-The most basic form of component definition look not much interesting, since one could as well define just a function and get the same result. The real benefit of component definition is to allow components to have complex dependencies among each others. The two most basic types of component dependencies are _middleware_ and _handleable_ dependencies.
+The most basic form of component definition look not much interesting, since one could as well define just a function and get the same result. The real benefit of component definition is to allow components to have complex dependencies among each others. The two common types of component dependencies are _middleware_ and _handleable_ dependencies.
 
 ### Middleware
 
@@ -257,7 +257,9 @@ There are several problems with the approach above:
   - There is lack of dependency management especially in ensuring filters are only applied once at outermost layer.
   - It is hard to customize the dependencies, because the functions are directly referencing each others. As a result one may not for example replace a middleware with another mock middleware for unit testing purpose.
 
-With the component definition approach it become much clearer on how the components are composed. Since components relationship are defined by name, the reference be modified at handler-building time to change the behavior of handler. On top of the definition is written in plain Javascript, it allows custom libraries to easily written to interprete and manipulate the component graph without having to resort to techniques like reflection.
+With the component definition approach it become much clearer on how the components are composed. Internally `quiver-component` do make use of `quiver-middleware` to compose components in similar way, so you don't have to do the glueing yourself.
+
+Since components relationship are defined by name, the reference be modified at handler-building time to change the behavior of handler. On top of the definition is written in plain Javascript, it allows custom libraries to easily written to interprete and manipulate the component graph without having to resort to techniques like reflection.
 
 
 ## Component Loading
@@ -268,9 +270,12 @@ The following example shows how the echo component is loaded:
 
 ```javascript
 var echoLib = require('./component/echo')
+var otherLib = require('./component/other')
 var componentLib = require('quiver-component')
 
-componentLib.installComponents(echoLib.quiverComponents, function(err, componentConfig) {
+var quiverComponents = [].concat(echoLib.quiverComponents, otherLib.quiverComponents)
+
+componentLib.installComponents(quiverComponents, function(err, componentConfig) {
   if(err) throw err
 
   var echoHandleableBuilder = componentConfig.quiverHandleableBuilders['demo echo handler']
@@ -283,7 +288,81 @@ componentLib.installComponents(echoLib.quiverComponents, function(err, component
 
 `quiver-component` parses each component definition and store its results in a `componentConfig` object. Different types of components are stored in different fields in the component config. The two most common component configs are the `quiverHandleableBuilders` and `quiverMiddlewares`. They are respectively used to store _component-managed handleable builders_ constructed from handler components, and _component-managed handleable middlewares_ constructed from middleware or filter components.
 
-The `componentConfig` also acts as reference to 
+Regardless of whether the handler types of the components are stream handler or HTTP handlers, the components are finally encapsulated into handleable builders or handleable middlewares by the component system. This allow the component system to handler different handler types all using the same code with possible extension in future. The configured components are _managed_, so the component dependency is resolved on instantiation time when config is passed to the handler builder or middleware. 
+
+The following pseudocode shows the equivalent actions quiver-component to manually create a managed handleable builder from the given component definition:
+
+```javascript
+var userComponent = {
+  name: 'user handler',
+  type: 'stream handler',
+  middlewares: [
+    'user middleware'
+  ],
+  handlerBuilder: userHandlerBuilder
+}
+
+var userHandlerBuilder = function(config, callback) { ... }
+
+var userHandleableBuilder = streamHandlerBuilderToHandleableBuilder(userHandlerBuilder)
+
+var managedUserHandleableBuilder = function(config, callback) {
+  var handleableMiddleware = config.quiverMiddlewares['user middleware']
+
+  handleableMiddleware(config, userHandleableBuilder, callback)
+}
+
+var componentConfig = {
+  quiverHandleableBuilders: {
+    'user handler': managedUserHandleableBuilder
+  }
+}
+```
+
+The point is that the handler/middleware dependencies are resolved based on the config supplied to the managed handler builder/middleware. In other words the `componentConfig` returned from `quiver-component` is usually required to get merged with user-provided config and get passed together to the managed handler builder/middleware.
+
+The rational for this is again to maximize the customizability of the quiver component system. One can for example manually inject/replace with custom handleable builder/middleware anywhere in user code without having to interact with the quiver component system:
+
+```javascript
+var fooHandlerBuilder = function(config, callback) {
+  var handleable = config.quiverStreamHandlers['non-existent handler']
+
+  ...
+}
+
+var barMiddleware = function(config, handlerBuilder, callback) {
+  var myCustomBarHandler = function(args, inputStreamable, callback) {
+    ...
+  }
+
+  config.quiverStreamHandlers['non-existent handler'] = myCustomBarHandler
+  handlerBuilder(config, callback)
+}
+
+var quiverComponents = [
+  {
+    name: 'foo handler',
+    type: 'stream handler',
+    handleables: [
+      {
+        handler: 'non-existent handler',
+        type: 'stream handler'
+      }
+    ],
+    middlewares: [
+      'bar middleware'
+    ],
+    handlerBuilder: fooHandlerBuilder
+  },
+  {
+    name: 'bar middleware',
+    type: 'handleable middleware',
+    middleware: barMiddleware
+  }
+]
+```
+
+In the above example, fooHandler has dependency on a non-existent handler that is not defined anywhere as a component. However the handler also have a dependency to the barMiddleware, which modifies the config and inject a custom handler into `config.quiverStreamHandlers['non-existent handler']`. With that fooHandler would continue to work as expected even though looking at the component definition alone, the dependency does not seem to be resolvable.
 
 ## Handler Component
 
