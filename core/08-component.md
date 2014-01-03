@@ -364,14 +364,169 @@ var quiverComponents = [
 
 In the above example, fooHandler has dependency on a non-existent handler that is not defined anywhere as a component. However the handler also have a dependency to the barMiddleware, which modifies the config and inject a custom handler into `config.quiverStreamHandlers['non-existent handler']`. With that fooHandler would continue to work as expected even though looking at the component definition alone, the dependency does not seem to be resolvable.
 
-## Handler Component
+## Namespace
 
-### Simple Handler
+Quiver component names are not separated by explicit namespace. Therefore it is common practice to have explicit naming convention to ensure there is no general naming conflict among software projects. The first word of a component name is typically reserved for namespace. For example, all "standard" quiver components developed by Quiver.js will have the word "quiver" prefixed in their component name.
 
-## Filter and Middleware Component
+Component names may currently contain any normal characters, including 0-9, a-z, A-Z, "-", "_", and white space " ". The symbol characters are reserved for possible future DSL extensions.
 
-## Router Component
+Although quiver components have global namespace, the name reference are resolved on component initialization time through the passed-in `config` argument. Therefore it remain possible to have variable-shadowing-like effect of overriding a name reference to new component through manipulation by middlewares. A subcomponent system is also currently in development to allow subcomponents to be visible to some specific components.
 
-## Pipeline Component
+## Component Types
+
+Below is a list of component types currently available:
+
+### Handler
+
+Handler is the most basic type of quiver component. Although the component is called handler, by default it accepts a handler builder for constructing the handler. There are currently four types of handler components: stream handler, http handler, and handleable. The handler builder signature for all four handler types are the same, but the result handler these handler builders return must have the same handler type as specified.
+
+
+```javscript
+{
+  name: 'my http handler',
+  type: 'http handler',
+  handlerBuilder: function(config, callback) { ... }
+}
+```
+
+Alternatively the handler component may accept the name of another handler in its `handler` field. Handler component of this type is called _extension handler_, because it extends the behavior of existing handler component. There is however no way of extending the component inside component definition. Instead they are typically used to specify extra attributes to the original component, such as adding middleware or configOverride options.
+
+```javscript
+{
+  name: 'my extended http handler',
+  type: 'http handler',
+  middlewares: [
+    'my http extension filter'
+  ],
+  handler: 'my http handler'
+}
+```
+
+Simple handler component are very much the same as other handler component, except that it require two other compulsory parameters which are `inputType` and `outputType`. These are to specify and input and output type for the simple handler respectively. Simple handler is a subtype of stream handler, and they are implicitly converted and treated as stream handlers at component installation time.
+
+```javscript
+{
+  name: 'my simple handler',
+  type: 'simple handler',
+  inputType: 'void',
+  outputType: 'text',
+  handlerBuilder: function(config, callback) { ... }
+}
+```
+
+Regardless of the handler type, all handler components are converted into handleable builders and can be found in `componentConfig.quiverHandleableBuilders`.
+
+### Filter
+
+Filter components extend on instantiated quiver handlers of the same handler type. Since simple handler are really the same as stream handler, there are only three types of filters: stream filter, http filter, and handleable filter. There is no simple filter available, another reason being that it is not as easy to simplify stream filter as compared to stream handler.
+
+Behind the scene filters are implicitly converted to handleable middleware at component installation time. The wrapped filter may be applied to any handleable builder, but the component system will unbox the handleable and make sure it is the right handler before passing to the filter function.
+
+```javascript
+{
+  name: 'my stream filter',
+  type: 'stream filter',
+  filter: function(config, handler, callback) { ... }
+}
+```
+
+As an example the above filter component would be converted into a handleable middleware that is equivalent to the following pseudocode:
+
+```javascript
+var myStreamFilter = function(config, handler, callback) { ... }
+
+var myStreamFilterMiddleware = function(config, handleableBuilder, callback) {
+  handleableBuilder(config, function(err, handleable) {
+    if(err) return callback(err)
+
+    if(!handleable.toStreamHandler) return callback(error(500, 'mismatch handler type'))
+
+    myStreamFilter(config, handleable.toStreamHandler(), function(err, filteredHandler) {
+      if(err) return callback(err)
+
+      var filteredHandleable = streamHandlerToHandleable(filteredHandler)
+      callback(null, filteredHandleable)
+    })
+  })
+}
+```
+
+### Middleware
+
+```javascript
+{
+  name: 'my handleable middleware',
+  type: 'handleable middleware',
+  middleware: function(config, handleableBuilder, callback) { ... }
+}
+```
+
+### Router
+
+```javascript
+{
+  name: 'my route list',
+  type: 'route list',
+  routeList: [
+    {
+      routeType: 'static',
+      path: '/static/path',
+      handler: 'my handler'
+    },
+    {
+      routeType: 'regex',
+      regex: /^\/prefix(\/\w+)$/,
+      matchFields: ['path'],
+      handler: 'my other handler'
+    }
+  ]
+}
+
+{
+  name: 'my other route list',
+  type: 'route list',
+  routeList: [
+    {
+      routeType: 'dynamic',
+      matcher: function(path) { ... },
+      handler: 'my another handler'
+    }
+  ]
+}
+
+{
+  name: 'my router',
+  type: 'router',
+  routeLists: [
+    'my route list',
+    'my other route list'
+  ]
+}
+```
+
+### Pipeline
+
+```javascript
+{
+  name: 'my pipeline handler',
+  type: 'stream pipeline',
+  pipeline: [
+    'first handler',
+    'second handler',
+    'third handler'
+  ]
+}
+```
+
+## Component Options
+
+### Middlewares
+
+### Handleables
+
+### ConfigOverride
+
+### ConfigParam
+
 
 ## Next: [Module](09-module.md)
