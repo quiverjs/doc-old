@@ -453,6 +453,8 @@ var myStreamFilterMiddleware = function(config, handleableBuilder, callback) {
 
 ### Middleware
 
+The middleware component is very much similar to filter component. There are three types of middleware: stream middleware, http middleware, and handleable middleware. Typically handleable middlewares are defined for modifiying only the config and directly return result from its handler buider. That way the middleware can be applied to all types of handler builders.
+
 ```javascript
 {
   name: 'my handleable middleware',
@@ -461,7 +463,29 @@ var myStreamFilterMiddleware = function(config, handleableBuilder, callback) {
 }
 ```
 
+### Pipeline
+
+Pipeline combines multiple stream handler components into one stream handler that process through a pipeline chain. In the pipeline handler the input stream is first processed by the first stream handler, and the result stream returned is fed as the input stream of the second handler, and so on until the last handler in the pipeline.
+
+```javascript
+{
+  name: 'my pipeline handler',
+  type: 'stream pipeline',
+  pipeline: [
+    'first handler',
+    'second handler',
+    'third handler'
+  ]
+}
+```
+
 ### Router
+
+Router is a special stream handler component that routes incoming request to different stream handlers based on `args.path`. This is the main way of combining multiple handler components into one handler component.
+
+There are currently three types of routes available. Static route require exact string match with `args.path`. regex route matches the provided regex with `path`, and adds the regex match results into `args` based on keys provided in `matchFields`. Dynamic route use provided matcher function to match a path, and add extracted parameters returned from matcher function into `args`.
+
+Stream handler routing is consist of two route components. The route list component is used to specify part of the routes and the handlers routed to. The router component then accepts a list of route list names and combine all routes into one handler component.
 
 ```javascript
 {
@@ -504,29 +528,119 @@ var myStreamFilterMiddleware = function(config, handleableBuilder, callback) {
 }
 ```
 
-### Pipeline
+The reason to separate route list from router definition is so that complex routes can be defined in multiple source files. It also allow part of the routes to be reused to create different router handlers.
 
-```javascript
-{
-  name: 'my pipeline handler',
-  type: 'stream pipeline',
-  pipeline: [
-    'first handler',
-    'second handler',
-    'third handler'
-  ]
-}
-```
+The router handler created from the router component is of type stream handler. Currently there is no http router available.
+
+More information about how stream handler routing works can be found at [quiver-router](https://github.com/quiverjs/router).
+
 
 ## Component Options
 
+For all components that produce handler builder or middleware, there are a number of component options that can be applied to these components to extend their functionalities. This is applicable to all the components described earlier, except the route list component.
+
 ### Middlewares
+
+The `middlewares` option accept an array of middlewares to apply to the handler builder/middleware. Middlewares are by default applied only once at its outer most occurance. In the case of applying middlewares to middleware, it really means that the middleware require other middlewares to be applied before reaches itself.
+
+```javascript
+{
+  name: 'my middleware',
+  type: 'stream middleware',
+  middlewares: [
+    'my other middleware'
+  ],
+  middleware: function(config, handlerBuilder, callback) { ... }
+}
+```
+
+The application of middleware is only activated at handler building time. Error will be returned at that time if there is a mismatch of middleware type. Prior to that the component system do not verify handler type compatibility of a middleware with a handler.
+
 
 ### Handleables
 
+Handleables provide input handlers to a middleware or handler builder through config. The component system will instantiate the input handlers at handler building time and convert them to the right handler type. By default the input handler type is handleable, and require explicit specification for other handler types.
+
+```
+{
+  name: 'my handler',
+  type: 'stream handler',
+  handleables: [
+    'my helper handleable',
+    {
+      handler: 'my helper stream handler',
+      type: 'stream handler'
+    },
+    {
+      handler: 'my helper simple handler',
+      type: 'simple handler',
+      inputType: 'text',
+      outputType: 'void'
+    }
+  ],
+  handlerBuilder: function(config, callback) { ... }
+}
+```
+
 ### ConfigOverride
+
+ConfigOverride overrides some `config` parameters just before it reaches the handler builder or middleware function. This is especially useful for extending a component from some generic component.
+
+```javascript
+{
+  name: 'my generic handler',
+  type: 'stream handler',
+  handlerBuilder: function(config, callback) {
+    var target = config.target
+
+    // do something with target
+    ...
+  }
+}
+
+{
+  name: 'my foo handler',
+  type: 'stream handler',
+  configOverride: {
+    target: 'foo'
+  },
+  handler: 'my generic handler'
+}
+
+{
+  name: 'my bar handler',
+  type: 'stream handler',
+  middlewares: [
+    'bar filter'
+  ],
+  configOverride: {
+    target: 'bar'
+  },
+  handler: 'my generic handler'
+}
+```
 
 ### ConfigParam
 
+The config param is used to enforce type safety of config parameters through the [quiver-param](https://github.com/quiverjs/param) module.
+
+```javascript
+{
+  name: 'my generic handler',
+  type: 'stream handler',
+  configParam: [
+    {
+      key: 'target',
+      required: true,
+      valueType: 'string'
+    }
+  ],
+  handlerBuilder: function(config, callback) {
+    var target = config.target
+
+    ...
+  }
+}
+```
 
 ## Next: [Module](09-module.md)
