@@ -430,27 +430,6 @@ Behind the scene filters are implicitly converted to handleable middleware at co
 }
 ```
 
-As an example the above filter component would be converted into a handleable middleware that is equivalent to the following pseudocode:
-
-```javascript
-var myStreamFilter = function(config, handler, callback) { ... }
-
-var myStreamFilterMiddleware = function(config, handleableBuilder, callback) {
-  handleableBuilder(config, function(err, handleable) {
-    if(err) return callback(err)
-
-    if(!handleable.toStreamHandler) return callback(error(500, 'mismatch handler type'))
-
-    myStreamFilter(config, handleable.toStreamHandler(), function(err, filteredHandler) {
-      if(err) return callback(err)
-
-      var filteredHandleable = streamHandlerToHandleable(filteredHandler)
-      callback(null, filteredHandleable)
-    })
-  })
-}
-```
-
 ### Middleware
 
 The middleware component is very much similar to filter component. There are three types of middleware: stream middleware, http middleware, and handleable middleware. Typically handleable middlewares are defined for modifiying only the config and directly return result from its handler buider. That way the middleware can be applied to all types of handler builders.
