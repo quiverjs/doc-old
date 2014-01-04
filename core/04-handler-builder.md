@@ -7,7 +7,7 @@ The [Handler](03-handler.md) chapter introduced the quiver stream handler and HT
 _Handler builder_ provides a uniform way of configuring handlers:
 
 ```javascript
-var handlerBuilder = function(config, function(err, handler) { })
+var handlerBuilder = function(config, function(err, handler) { }) { }
 ```
 
 A Handler builder accepts a plain Javascript object `config` and asynchronously return a handler instance. The `config` parameter should contain all parameters the handler needs, and the handler builder creates a handler function closure that captures the configurations. Following is an example of a greet handler builder with custom greeting word:

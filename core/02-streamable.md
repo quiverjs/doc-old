@@ -23,11 +23,20 @@ var greet = function(readStream, callback) {
     callback(null, streamConvert.textToStream(greeting))
   })
 }
+
+var myName = 'john'
+
+// Why convert to stream
+var readStream = streamConvert.textToStream(myName)
+greet(readStream, function(err, resultStream) { ... })
+
+// instead of passing the string itself?
+// greet(myName, function(err, greeting) { ... })
 ```
 
 The `greet()` function works great if it is processing streams consist of raw bytes. But in the case where there is already a plain Javascript object reside in the program, the function would work less efficiently because the Javascript object has to be serialized into raw bytes only to be parsed again inside the function.
 
-To solve this problem, we need to write functions that accept object that is convertible to both stream and plain Javascript objects. In Quiver.js such object is called a _streamable_. A streamable is a plain Javascript object that has a compulsory `toStream` method and arbitrary number of optional `toXXX()` methods where XXX is the Javascript object representation of the streamable, such as `toText()` and `toJson()`.
+To solve this problem, we need to write functions that accept object that is convertible to both stream and plain Javascript objects. In Quiver.js such object is called a _streamable_. A streamable is a plain Javascript object that has a compulsory `toStream` method and arbitrary number of optional `toXXX()` methods where `XXXX` is the Javascript object representation of the streamable, such as `toText()` and `toJson()`.
 
 The converted objects or streams are independent from the streamable object and its other representations. For instance if a json object returned from `streamable.toJson()` is modified, it cannot affect the stream representation returned from `streamable.toStream()` nor value returned from subsequent calls to `streamable.toJson()`.
 
@@ -104,15 +113,15 @@ Streamable objects have an optional reusable flag, which indicates whether the `
 ## API Specification
 
 ```javascript
-streamable.toStream(function (err, readStream) { })
+streamable.toStream = function(function (err, readStream) { }) { }
 ```
 
 Returns a quiver read stream representation of the data inside the streamable. If the streamable is not reusable and `toStream()` has been called before, an error will be returned.
 
 ```javascript
-streamable.toText(function (err, text) { })
-streamable.toJson(function (err, json) { })
-streamable.toXXXX(function (err, convertedObject) { })
+streamable.toText = function(function (err, text) { }) { }
+streamable.toJson = function(function (err, json) { }) { }
+streamable.toXXXX = function(function (err, convertedObject) { }) { }
 ```
 
 If a function with prefix “to” exist on the streamable, it can be used to convert the streamable to the respective equivalent Javascript objects and allow one to skip parsing it from raw byte stream.
@@ -133,8 +142,8 @@ Convert a string or plain Javascript object into streamable that contain optimiz
 
 
 ```javascript
-streamConvert.streamableToText(function (err, text) { })
-streamConvert.streamableToJson(function (err, json) { })
+streamConvert.streamableToText = function(streamable, function (err, text) { }) { }
+streamConvert.streamableToJson = function(streamable, function (err, json) { }) { }
 ```
 
 Convert streamable into string or plain Javascript object while making use of optimized `toText()`/`toJson()` methods in the streamable if exist.

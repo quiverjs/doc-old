@@ -36,7 +36,7 @@ var handleable = {
 
 ## Handleable Builder
 
-Since handleable is just simple wrapper around handler, it is simple to convert a handler builder into _handleable builder_
+Since handleable is just simple wrapper around handler, it is trivial to convert a handler builder into _handleable builder_.
 
 ```javascript
 var streamHandlerBuilder = function(config, callback) { ... }
@@ -58,7 +58,7 @@ var handleableBuilder = function(config, callback) {
 
 ## Handleable Middleware
 
-To ensure that filters and middlewares are applied on the right handler type, Quiver.js provides tools to convert filter and middleware into _handleable middleware_:
+To ensure that filters and middlewares are applied on the right handler type, Quiver.js provides tools to convert filter and middleware into _handleable middleware_.
 
 ```javascript
 var myStreamFilter = function(config, handler, callback) { ... }
@@ -81,7 +81,7 @@ var myStreamFilterMiddleware = function(config, handleableBuilder, callback) {
 
 ## Handleable Extension
 
-The design of handleable enable possibility for one to "serialize" a handler by sending its location to some client. For example a file handler may have a `toFilePath()` method on its handleable so that local clients can make optimization in accessing the handler content.
+The design of handleable also enable possibility for one to "serialize" a handler by sending its location to some client. For example a file handler may have a `toFilePath()` method on its handleable so that local clients can make optimization in accessing the handler content.
 
 ```javascript
 var fileHandleableBuilder = function(config, callback) {

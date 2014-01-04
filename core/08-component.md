@@ -228,14 +228,14 @@ var quiverComponents = [
   },
 ```
 
-Note that there is no need for the original handler to be defined as simple handler to be used by others as input simple handlers. `quiver-component` provides conversion from handleable simple handler regardless of how the handler was originally encapsulated. Any simple handler type mismatch will be ignored by the component system and have the error triggered during run time.
+Note that there is no need for the original handler to be defined as simple handler to be used by others as input simple handlers. `quiver-component` provides conversion from handleable to simple handler regardless of how the handler was originally encapsulated. Any simple handler type mismatch will be ignored by the component system and have the error triggered during run time.
 
-Question may arise on why the need of specifying the handler type twice, once in the handler definition and once in the input handler definition. The reason is because component definition is completely independent of each others, and `quiver-component` may has no knowledge of the at the time of component parsing. Another reason for this is to maximize the customizability, so that the specified input handler can be transparently replaced by another handler without the component aware of it.
+Question may arise on why the need of specifying the handler type twice, once in the handler definition and once in the input handler definition. The reason is because component definition is completely independent of each others, and `quiver-component` may has no knowledge of the handler type at the time of component parsing. Another reason for this is to maximize the customizability, so that the specified input handler can be transparently replaced by another handler without the component aware of it.
 
 
 ## White-box Composition
 
-The component definition is designed following the principle o _white-box composition_ which is the opposite of blackbox composition. You might wonder what is the need to define quiver components in that way rather than composing them directly using the `quiver-middleware` library:
+The component definition is designed following the principle of _white-box composition_ which is the opposite of blackbox composition. You might wonder what is the need to define quiver components in that way rather than composing them directly using the [quiver-middleware](https://github.com/quiverjs/middleware) library:
 
 ```javascript
 var middlewareLib = require('quiver-middleware')
@@ -288,7 +288,7 @@ componentLib.installComponents(quiverComponents, function(err, componentConfig) 
 
 `quiver-component` parses each component definition and store its results in a `componentConfig` object. Different types of components are stored in different fields in the component config. The two most common component configs are the `quiverHandleableBuilders` and `quiverMiddlewares`. They are respectively used to store _component-managed handleable builders_ constructed from handler components, and _component-managed handleable middlewares_ constructed from middleware or filter components.
 
-Regardless of whether the handler types of the components are stream handler or HTTP handlers, the components are finally encapsulated into handleable builders or handleable middlewares by the component system. This allow the component system to handler different handler types all using the same code with possible extension in future. The configured components are _managed_, so the component dependency is resolved on instantiation time when config is passed to the handler builder or middleware. 
+Regardless of whether the handler types of the components are stream handler or http handler, the components are finally encapsulated into handleable builders or handleable middlewares by the component system. This allow the component system to handler different handler types all using the same code with possible extension in future. The configured components are _managed_, so the component dependency is resolved on instantiation time when config is passed to the handler builder or middleware. 
 
 The following pseudocode shows the equivalent actions quiver-component to manually create a managed handleable builder from the given component definition:
 
@@ -325,7 +325,7 @@ The rational for this is again to maximize the customizability of the quiver com
 
 ```javascript
 var fooHandlerBuilder = function(config, callback) {
-  var handleable = config.quiverStreamHandlers['non-existent handler']
+  var inputHandler = config.quiverStreamHandlers['non-existent handler']
 
   ...
 }
@@ -368,7 +368,7 @@ In the above example, fooHandler has dependency on a non-existent handler that i
 
 Quiver component names are not separated by explicit namespace. Therefore it is common practice to have explicit naming convention to ensure there is no general naming conflict among software projects. The first word of a component name is typically reserved for namespace. For example, all "standard" quiver components developed by Quiver.js will have the word "quiver" prefixed in their component name.
 
-Component names may currently contain any normal characters, including 0-9, a-z, A-Z, "-", "_", and white space " ". The symbol characters are reserved for possible future DSL extensions.
+Component names may currently contain any identifier-friendly characters, including 0-9, a-z, A-Z, "-", "_", and white space " ". The symbol characters are reserved for possible future DSL extensions.
 
 Although quiver components have global namespace, the name reference are resolved on component initialization time through the passed-in `config` argument. Therefore it remain possible to have variable-shadowing-like effect of overriding a name reference to new component through manipulation by middlewares. A subcomponent system is also currently in development to allow subcomponents to be visible to some specific components.
 
@@ -378,7 +378,7 @@ Below is a list of component types currently available:
 
 ### Handler
 
-Handler is the most basic type of quiver component. Although the component is called handler, by default it accepts a handler builder for constructing the handler. There are currently four types of handler components: stream handler, http handler, and handleable. The handler builder signature for all four handler types are the same, but the result handler these handler builders return must have the same handler type as specified.
+Handler is the most basic type of quiver component. Although the component is called handler, by default it accepts a handler builder for constructing the handler. There are currently four types of handler components: stream handler, http handler, simple handler, and handleable. The handler builder signature for all four handler types are the same, but the result handler these handler builders return must have the same handler type as specified.
 
 
 ```javscript
@@ -457,6 +457,8 @@ Pipeline combines multiple stream handler components into one stream handler tha
   ]
 }
 ```
+
+The combined pipeline produce a new pipeline stream handler.
 
 ### Router
 
