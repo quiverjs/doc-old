@@ -38,7 +38,7 @@ var databaseMiddleware = function(config, handlerBuilder, callback) {
 }
 ```
 
-Internally, Quiver.js make extensive use of middleware to preconfigure a user-written handler builder or middleware. For instance it allow filters to depend on other filters while making sure that each filter are only applied once at its outermost composition chain. Middleware also enable Quiver.js to provide dependency injection service by instantiating other handlers that a handler depend on and injecting it to config.
+Internally, Quiver.js make extensive use of middleware to preconfigure a user-written handler builder or middleware. For instance it allow filters to depend on other filters while making sure that each filter are only applied once at its outermost composition chain. Middleware also enable Quiver.js to provide dependency injection service by instantiating other handlers that a handler depend on and injecting it into their `config`.
 
 Middleware are also easily composable with handler builder to create new handler builder:
 

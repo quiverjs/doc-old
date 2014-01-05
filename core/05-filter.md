@@ -91,11 +91,11 @@ filteredHandlerBuilder({}, function(err, handler) {
 })
 ```
 
-For simplicity, we can annotate such filter composition as `filter2(filter1(handler))`. `filter2` captures the filtered handler produced by `filter1`. Therefore the input transformation of `filter2` comes _before_ `filter1`, and result transformation of `filter2` comes _after `filter1`. As a result depending on whether a filter perform input or result or both transformation, some thinking is required to make sure the order of filter composition is correct.
+For simplicity, we can annotate such filter composition as `filter2(filter1(handler))`. `filter2` captures the filtered handler produced by `filter1`. Therefore the input transformation of `filter2` comes _before_ `filter1`, and result transformation of `filter2` comes _after_ `filter1`. As a result depending on whether a filter perform input or result or both transformation, some thinking is required to make sure the order of filter composition is correct.
 
 ## HTTP Filter
 
-The above examples are mostly for writing _stream filters_, which extend functionality of stream handlers. It is of course also possible to write http filters_ that extend functionality of http handlers:
+The above examples are mostly for writing _stream filters_, which extend functionality of stream handlers. It is also possible to write _http filters_ that extend functionality of http handlers:
 
 ```javascript
 var friendlyErrorRedirectionHttpFilter = function(config, httpHandler, callback) {

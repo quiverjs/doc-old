@@ -32,7 +32,7 @@ The above code looks ok until we discover the weakness of node stream. In the [S
 var handler = function(args, readStream, function(err, readStream) { }) { }
 ```
 
-The handler making use of quiver read stream is much more elegant, but is not efficient in serializing/deserializing existing Javascript objects to the handler function. In the [Streamabe](02-streamable.md) chapter we also learn that streamable can be used to store multiple representation of a stream for fast access of stream content. With that we finally have the quiver _stream handler_:
+The handler making use of quiver read stream is much more elegant, but is not efficient in serializing/deserializing existing Javascript objects to the handler function. In the [Streamable](02-streamable.md) chapter we also learn that streamable can be used to store multiple representation of a stream for fast access of stream content. With that we finally have the quiver _stream handler_:
 
 ```javascript
 var streamHandler = function(args, inputStreamable, function(err, resultStreamable) { }) { }
@@ -180,12 +180,11 @@ var redirectHttpHandler = function(requestHead, requestStreamable, callback) {
     }
   }
 
-  // empty streamable represents empty response body
-  var responseStreamable = streamChannel.createEmptyStreamable()
+  var responseStreamable = streamConvert.textToStreamable('Redirecting you to our new page..')
   callback(null, responseHead, responseStreamable)
 }
 ```
 
-In the above example the HTTP 405 error is returned as a simple error object instead of as full HTTP response. In the handler callback the error object is retained so that HTTP handlers can make a quick return in the case of internal errors. Returning error is different from returning explicit status such as 500, as it indicates that the handler is explicitly _undecisive_ on how to render the error as HTTP response. Therefore this allows intermediaries to intercept the error and provide customized HTTP error response back to the client.
+In the above example when the HTTP request method is not POST, the HTTP 405 error is returned as a simple error object instead of as full HTTP response. The error argument in the callback is for HTTP handlers to make a quick return in the case of simple or internal errors. Returning error is different from returning explicit status such as 500 in response head, as it indicates that the handler is explicitly _undecisive_ on how to render the error as HTTP response. Therefore this allows intermediaries to intercept the error and provide customized HTTP error response back to the client.
 
 ## Next: [Handler Builder](04-handler-builder.md)

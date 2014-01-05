@@ -72,7 +72,11 @@ var myStreamFilterMiddleware = function(config, handleableBuilder, callback) {
     myStreamFilter(config, handleable.toStreamHandler(), function(err, filteredHandler) {
       if(err) return callback(err)
 
-      var filteredHandleable = streamHandlerToHandleable(filteredHandler)
+      var filteredHandleable = {
+        toStreamHandler: function() {
+          return filteredHandler
+        }
+      }
       callback(null, filteredHandleable)
     })
   })
@@ -99,6 +103,8 @@ var fileHandleableBuilder = function(config, callback) {
       return filePath
     }
   }
+
+  callback(null, handleable)
 }
 ```
 

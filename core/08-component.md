@@ -91,7 +91,7 @@ var quiverComponents = [
 ]
 ```
 
-Notice that the component definitions can also be defined in different source files. There is no need for the source files to include the dependency source files because dependencies are referenced by name in the form of string. The Quiver component system will automatically manage the dependencies and apply dependency with the instantiated components.
+Note that the component definitions can also be defined in different source files. There is no need for the source files to include the dependency source files because dependencies are referenced by name in the form of string. The Quiver component system will automatically manage the dependencies and apply dependency with the instantiated components.
 
 Middleware dependencies can also be applied to middleware. That really mean that the given middleware require other specified middlewares to be applied before itself. This could lead to an issue which a middleware is repeated inside nested middleware dependencies. In this case `quiver-component` by default would apply the middleware only once when it is found the first time at the outermost layer.
 
@@ -135,13 +135,19 @@ In the above example each filters will be applied only once in the order of `fil
 
 ### Input Handleables
 
-Handler builders and middlewares may also have another dependencies, which are _input handlers_. Input handlers allow a handler builder or middleware to access another handler that has already been instantiated and component-configured. Consider the following example:
+Handler builders and middlewares may also have another type of dependencies, which are _input handlers_. Input handlers allow a handler builder or middleware to access another handler that has already been instantiated and component-configured. Consider the following example:
 
 ```javascript
 var fooHandlerBuilder = function(config, callback) {
   var barHandleable = config.quiverHandleables['bar handler']
 
-  ...
+  if(barHandleable.toStreamHandler) {
+    var barHandler = barHandleable.toStreamHandler()
+
+    ...
+  } else {
+    ...
+  }
 }
 
 var barHandlerBuilder = function(config, callback) { ... }
@@ -196,7 +202,8 @@ var quiverComponents = [
       }
     ],
     handlerBuilder: fooHandlerBuilder
-  },
+  }
+]
 ```
 
 In the above example the input handler type of bar handler is specified as stream handler, and the instantiated bar handler is retrieved from `config.quiverStreamHandlers` instead.
@@ -225,7 +232,8 @@ var quiverComponents = [
       }
     ],
     handlerBuilder: fooHandlerBuilder
-  },
+  }
+]
 ```
 
 Note that there is no need for the original handler to be defined as simple handler to be used by others as input simple handlers. `quiver-component` provides conversion from handleable to simple handler regardless of how the handler was originally encapsulated. Any simple handler type mismatch will be ignored by the component system and have the error triggered during run time.
