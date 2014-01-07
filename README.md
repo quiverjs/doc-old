@@ -34,15 +34,15 @@ A quiver application is made of many such quiver components, such as [handlers](
 
 Quiver.js is made of the following core concepts, with each of them built on top of the previous ones.
 
-  1. [Stream](01-stream.md)
-  2. [Streamable](02-streamable.md)
-  3. [Handler](03-handler.md)
-  4. [Handler builder](04-handler-builder.md)
-  5. [Filter](05-filter.md)
-  6. [Middleware](06-middleware.md)
-  7. [Handleable](07-handleable.md)
-  8. [Component](08-component.md)
-  9. [Module](09-module.md)
+  1. [Stream](core/01-stream.md)
+  2. [Streamable](core/02-streamable.md)
+  3. [Handler](core/03-handler.md)
+  4. [Handler builder](core/04-handler-builder.md)
+  5. [Filter](core/05-filter.md)
+  6. [Middleware](core/06-middleware.md)
+  7. [Handleable](core/07-handleable.md)
+  8. [Component](core/08-component.md)
+  9. [Module](core/09-module.md)
 
 ## Demo and Tutorial
 
