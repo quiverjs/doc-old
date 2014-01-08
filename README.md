@@ -30,6 +30,12 @@ var quiverComponents = [
 
 A quiver application is made of many such quiver components, such as [handlers](core/03-handler.md) and [filters](core/05-filter.md). Each of these component types have well defined function signatures that are specifically designed to make it modular and scalable. The [component system](08-component.md) allow complex component dependency graph to be built by specifying it in a JSON-like DSL.
 
+## Demo and Tutorial
+
+Simple demos and tutorials are written for quick introduction to Quiver.js.
+
+  1. [Hello User](https://github.com/quiverjs/demo/tree/master/01-hello-user) demonstrates the way to write a set of quiver components to serve different users in different ways.
+
 ## Core Concepts
 
 Quiver.js is made of the following core concepts, with each of them built on top of the previous ones.
@@ -44,20 +50,14 @@ Quiver.js is made of the following core concepts, with each of them built on top
   8. [Component](core/08-component.md)
   9. [Module](core/09-module.md)
 
-## Demo and Tutorial
-
-Simple demos and tutorials are written for quick introduction to Quiver.js.
-
-  1. [Hello User](https://github.com/quiverjs/demo/tree/master/01-hello-user)
-
 ## [FAQ](FAQ.md)
 
 ## Libraries
 
 A list of available Quiver.js libraries can be found at the project GitHub [organization page](https://github.com/quiverjs).
 
-## Coming Soon
+## Status
 
 Quiver.js is currently at its final stage of private development. The library will soon have its beta release by February 2014.
 
-If you are interested to learn more about the project, please contact the author Soares Chen at soares.chen@gmail.com.
+If you are interested to learn more about the project, please contact the author [Soares Chen](https://github.com/soareschen) at soares.chen@gmail.com.
