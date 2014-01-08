@@ -61,3 +61,7 @@ A list of available Quiver.js libraries can be found at the project GitHub [orga
 Quiver.js is currently at its final stage of private development. The library will soon have its beta release by February 2014.
 
 If you are interested to learn more about the project, please contact the author [Soares Chen](https://github.com/soareschen) at soares.chen@gmail.com.
+
+## Acknowledgement
+
+I'd like to thank my company DoReMIR Music Research AB for giving me chance to make use of Quiver.js in the company's backend development. Quiver.js currently runs on the production backend server of [ScoreCloud](http://scorecloud.com/). (p.s. and we are [hiring](http://scorecloud.com/jobs/#backenddev))
