@@ -4,9 +4,11 @@ Quiver.js Documentation
 
 ## Introduction
 
-Quiver.js is a server-side component system that allow web applications to be built consist of small and reusable components. It consist of a collection of small libraries written in Javascript running on Node.js.
+Quiver.js is a server-side component system for creating large-scale Node.js applications. In Quiver, instead of organizing code as classes or functions, you write interconnected _Quiver Components_ to form a complex component graph.
 
-Web applications using Quiver.js are easily reconfigurable by simply rewiring components in different ways with minimal coding required. Components in Quiver.js are written as pure Javascript functions that are combined using functional composition techniques. For example here is a simple hello world handler component:
+Quiver components are very easy to use and can be built in three simple steps. First you define _plain functions_ with one of the three _standard component signatures_ in Quiver. Next you write component definitions in a JSON-like Quiver DSL that is made of _plain Javascript constructs_. Lastly simply export the components as an array from your Node modules. The Quiver Component System will then take care the rest for you and connect all your components together.
+
+As an example here is a simple hello world handler component:
 
 ```javascript
 var helloHandlerBuilder = function(config, callback) {
@@ -19,22 +21,35 @@ var helloHandlerBuilder = function(config, callback) {
 
 var quiverComponents = [
   {
-    name: 'hello handler',
+    name: 'my hello handler',
     type: 'simple handler',
     inputType: 'void',
     outputType: 'text',
+    middlewares: [
+      'my permission filter',
+      'my cache filter'
+    ],
+    handleables: [
+      'my cloud services handler'
+    ],
     handlerBuilder: helloHandlerBuilder
   }
 ]
-```
 
-A quiver application is made of many such quiver components, such as [handlers](core/03-handler.md) and [filters](core/05-filter.md). Each of these component types have well defined function signatures that are specifically designed to make it modular and scalable. The [component system](08-component.md) allow complex component dependency graph to be built by specifying it in a JSON-like DSL.
+module.exports = {
+  quiverComponents: quiverComponents
+}
+```
 
 ## Demo and Tutorial
 
 Simple demos and tutorials are written for quick introduction to Quiver.js.
 
   1. [Hello User](https://github.com/quiverjs/demo/tree/master/01-hello-user) demonstrates the way to write a set of quiver components to serve different users in different ways.
+
+## Why Quiver?
+
+You should use Quiver if 
 
 ## Core Concepts
 
@@ -64,4 +79,4 @@ If you are interested to learn more about the project, please contact the author
 
 ## Acknowledgement
 
-I'd like to thank my company DoReMIR Music Research AB for giving me chance to make use of Quiver.js in the company's backend development. Quiver.js currently runs on the production backend server of [ScoreCloud](http://scorecloud.com/). (p.s. and we are [hiring](http://scorecloud.com/jobs/#backenddev))
+I'd like to thank my company DoReMIR Music Research AB for giving me chance to make use of Quiver.js in the company's backend development. Quiver.js currently runs on the production backend server of [ScoreCloud](http://scorecloud.com/). (p.s. and we are [hiring](http://scorecloud.com/jobs/#backenddev)!)
