@@ -24,7 +24,7 @@ Quiver component graph is configured _once_ during setup time. The same componen
 
 ### Dependency Management
 
-Quiver component graph is composed at [_constructor level_](core/04-handler-builder.md). Quiver constructors are plain functions with standard signatures to accept at least a `config` parameter, which is used to inject dependencies to the component. Therefore it is very easy to reconfigure components simply through basic programming.
+Quiver component graphs are composed at [_constructor level_](core/04-handler-builder.md). Quiver constructors are plain functions with standard signatures to accept at least a `config` parameter, which is used to inject dependencies to the component. Therefore it is very easy to reconfigure components simply through basic programming.
 
 
 ### Input/Output Count
@@ -40,6 +40,11 @@ Quiver allows components to accept/return polymorphic input/output with the [str
 ### Intermediary Composition
 
 Quiver components like [filters](core/05-filter.md) can wrap around other components and intercept their input, output, and error. The pattern is similar to Aspect-Oriented Programming and allow separation of concerns in component implementation.
+
+
+### Back Pressure
+
+Quiver streams have implicit back pressure control without having to rely on techniques like pause method. Therefore the component graph have implicit flow control and do not suffer from problems like producing result streams faster than the network bandwidth.
 
 
 ### Stream Forwarding
