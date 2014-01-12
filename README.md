@@ -54,12 +54,12 @@ Quiver is for you if:
 
   - **You want to write better code**
 
-  Quiver at its bare minimal is a collection of design patterns for writing scalable and modular applications. It is at about the same level as object-oriented programming and act as an alternative to classical OOP patterns. 
+  Quiver is at its bare minimal a collection of design patterns for writing scalable and modular applications. It is at about the same level as object-oriented programming and act as an alternative to classical OOP patterns. You may even learn from Quiver and apply its design patterns to other programming languages that support higher order functions.
 
 
-  - **You want total control of how your application behave**
+  - **You prefer the power and expressiveness of frameworks, but also want total control of how your application behave**
   
-  Quiver have minimal opinion on how application-specific code should be written. For instance it does not say how you should define you data models or which templating language you should use. With Quiver you can write applications that suit your exact needs.
+  Quiver have minimal opinion on how application-specific code should be written. For instance it does not say how you should define you data models or which templating language you should use. With Quiver you can write very few lines of code by reusing quiver components contributed by others. At the same time you can have full control of your application behavior by simply re-arranging the quiver component graphs.
 
 
   - **You want to build frameworks or platforms that are more interoperable with other projects**
