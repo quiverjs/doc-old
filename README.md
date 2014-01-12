@@ -90,7 +90,7 @@ Quiver.js is made of the following core concepts, with each of them built on top
 
 ## Status for Beginners
 
-Quiver is currently no recommended for beginners or developers who want to quickly build simple applications. Writing application on Quiver is right now as hard as writing application on bare Node without framework.
+Quiver is currently no recommended for beginners or developers who want to quickly build simple applications. Writing application on Quiver is right now as time-consuming as writing application on bare Node without framework.
 
 Writing applications on Quiver will be much easier in the near future, when there are more user-contributed quiver components available. For now we welcome core contributors to write and share their quiver components with the community.
 
