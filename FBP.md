@@ -17,6 +17,11 @@ Quiver currently focus exclusively on server-side web applications. The design o
 Quiver currently do _not_ rely on any visual programming elements to make it easier for programming. Rather Quiver focus on the classical way of creating many design patterns that developers can apply when writing their components.
 
 
+## Protocol Neutral
+
+Quiver [stream handlers](core/03-handler.md) are designed to be protocol neutral. The input and result stream from a stream handler can be adapted to come from any stream source, such as HTTP or command line. In future Quiver will also allow stream handler to accept/return multiple streams, provided that a stream multiplexer/demultiplexer function is defined to combine multiple streams into a single protocol-specific stream.
+
+
 ### Graph Configuration
 
 Quiver component graph is configured _once_ during setup time. The same component graph is then reused for multiple concurrent stream processing. Each processing starts with an input stream, which data arrive in chunks asynchronously.
@@ -44,7 +49,7 @@ Quiver components like [filters](core/05-filter.md) can wrap around other compon
 
 ### Back Pressure
 
-Quiver streams have implicit back pressure control without having to rely on techniques like pause method. Therefore the component graph have implicit flow control and do not suffer from problems like producing result streams faster than the network bandwidth.
+Quiver [streams](core/01-stream.md) have implicit back pressure control without having to rely on techniques like pause method. Therefore the component graph have implicit flow control and do not suffer from problems like producing result streams faster than the network bandwidth.
 
 
 ### Stream Forwarding
