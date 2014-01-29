@@ -17,7 +17,7 @@ Quiver currently focus exclusively on server-side web applications. The design o
 Quiver currently do _not_ rely on any visual programming elements to make it easier for programming. Rather Quiver focus on the classical way of creating many design patterns that developers can apply when writing their components.
 
 
-## Protocol Neutral
+### Protocol Neutral
 
 Quiver [stream handlers](core/03-handler.md) are designed to be protocol neutral. The input and result stream from a stream handler can be adapted to come from any stream source, such as HTTP or command line. In future Quiver will also allow stream handler to accept/return multiple streams, provided that a stream multiplexer/demultiplexer function is defined to combine multiple streams into a single protocol-specific stream.
 
@@ -45,6 +45,11 @@ Quiver allows components to accept/return polymorphic input/output with the [str
 ### Intermediary Composition
 
 Quiver components like [filters](core/05-filter.md) can wrap around other components and intercept their input, output, and error. The pattern is similar to Aspect-Oriented Programming and allow separation of concerns in component implementation.
+
+
+### Error Handling
+
+Quiver has explicit error handling mechanism in all its components using the standard asynchronous callback error convention. This allow complex component graph to fail in a fast and consistent way. It also allow intermediaries to intercept errors and make possible recovery.
 
 
 ### Back Pressure
